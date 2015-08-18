@@ -32,7 +32,35 @@ LPCTSTR WINAPI GetSystemErrorText(DWORD dwError, LPTSTR lpszBuff, ULONG nBuffSiz
 }
 
 LPCTSTR WINAPI GetApplicationErrorText(DWORD dwError, LPTSTR lpszBuff, ULONG nBuffSize) {
+	DWORD dwRetLen;
+	LPTSTR lpszTemp = NULL;
 
+	if (nBuffSize < 16) {
+		if (nBuffSize > 0) {
+			lpszBuff[0] = '\0';
+		}
+
+		return lpszBuff;
+	}
+
+	dwRetLen = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_ARGUMENT_ARRAY,
+							 NULL,
+							 dwError,
+							 LANG_NEUTRAL,
+							 (LPTSTR) &lpszTemp,
+							 0,
+							 NULL);
+
+	if (!dwRetLen || lpszTemp == NULL) {
+		lpszBuff[0] = '\0';
+	}
+	else {
+		lpszTemp[strlen(lpszTemp) - 2] = '\0';
+		sprintf(lpszBuff, "%0.*s (0x%x)", nBuffSize - 16, lpszTemp, dwError);
+		LocalFree((HLOCAL)lpszTemp);
+	}
+
+	return lpszBuff;
 }
 
 LPCTSTR WINAPI GetErrorText(DWORD dwError) {

@@ -1,9 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
-#include <WinBase.h>
-#include <windef.h>
-#include <WinUser.h>
+#include <Windows.h>
 
 VOID WINAPI PrintError(HWND, DWORD);
 
