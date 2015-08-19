@@ -1,4 +1,8 @@
+#include <stdio.h>
+#include <tchar.h>
 #include "exhandle.h"
+
+#define	MSG_FORMAT	L"%0.*s (0x%x)"
 
 LPCTSTR WINAPI GetSystemErrorText(DWORD dwError, LPTSTR lpszBuff, ULONG nBuffSize) {
 	DWORD dwRetLen;
@@ -6,7 +10,7 @@ LPCTSTR WINAPI GetSystemErrorText(DWORD dwError, LPTSTR lpszBuff, ULONG nBuffSiz
 
 	if (nBuffSize < 16) {
 		if (nBuffSize > 0) {
-			lpszBuff[0] = '\0';
+			lpszBuff[0] = L'\0';
 		}
 
 		return lpszBuff;
@@ -16,15 +20,16 @@ LPCTSTR WINAPI GetSystemErrorText(DWORD dwError, LPTSTR lpszBuff, ULONG nBuffSiz
 							 NULL,
 							 dwError,
 							 LANG_NEUTRAL, 
-							 (LPTSTR)&lpszTemp, 
+							 lpszTemp, 
 							 0, 
 							 NULL);
 	if (!dwRetLen || lpszTemp == NULL) {
-		lpszBuff[0] = '\0';
+		lpszBuff[0] = L'\0';
 	}
 	else {
-		lpszTemp[strlen(lpszTemp) - 2] = '\0';	//	remove cr and newline character
-		sprintf(lpszBuff, "%0.*s (0x%x)", nBuffSize - 16, lpszTemp, dwError);
+		size_t nMaxLen = wcslen(MSG_FORMAT) + wcslen(lpszTemp);
+		lpszTemp[wcslen(lpszTemp) - 2] = L'\0';	//	remove cr and newline character
+		swprintf(lpszBuff, nMaxLen, L"%0.*s (0x%x)", nBuffSize - 16, lpszTemp, dwError);
 		LocalFree((HLOCAL)lpszTemp);
 	}
 
@@ -37,7 +42,7 @@ LPCTSTR WINAPI GetApplicationErrorText(DWORD dwError, LPTSTR lpszBuff, ULONG nBu
 
 	if (nBuffSize < 16) {
 		if (nBuffSize > 0) {
-			lpszBuff[0] = '\0';
+			lpszBuff[0] = L'\0';
 		}
 
 		return lpszBuff;
@@ -47,7 +52,7 @@ LPCTSTR WINAPI GetApplicationErrorText(DWORD dwError, LPTSTR lpszBuff, ULONG nBu
 							 NULL,
 							 dwError,
 							 LANG_NEUTRAL,
-							 (LPTSTR) &lpszTemp,
+							 lpszTemp,
 							 0,
 							 NULL);
 
@@ -55,8 +60,9 @@ LPCTSTR WINAPI GetApplicationErrorText(DWORD dwError, LPTSTR lpszBuff, ULONG nBu
 		lpszBuff[0] = '\0';
 	}
 	else {
-		lpszTemp[strlen(lpszTemp) - 2] = '\0';
-		sprintf(lpszBuff, "%0.*s (0x%x)", nBuffSize - 16, lpszTemp, dwError);
+		size_t nMaxLen = wcslen(MSG_FORMAT) + wcslen(lpszTemp);
+		lpszTemp[wcslen(lpszTemp) - 2] = L'\0';
+		swprintf(lpszBuff, nMaxLen, L"%0.*s (0x%x)", nBuffSize - 16, lpszTemp, dwError);
 		LocalFree((HLOCAL)lpszTemp);
 	}
 
@@ -64,7 +70,7 @@ LPCTSTR WINAPI GetApplicationErrorText(DWORD dwError, LPTSTR lpszBuff, ULONG nBu
 }
 
 LPCTSTR WINAPI GetErrorText(DWORD dwError) {
-	TCHAR* buffer[300];
+	TCHAR buffer[300];
 	LPCTSTR lpszText;
 
 	if (dwError < 0x020000000)

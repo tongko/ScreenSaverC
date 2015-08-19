@@ -1,8 +1,14 @@
 #include "argsprse.h"
 
-PSAVER_ARGS WINAPI ParseArguments(LPCSTR lpszCmdLine) {
+DWORD WINAPI ParseArguments(LPCSTR lpszCmdLine, PSAVER_ARGS* pSaverArgs) {
 	
-	PSAVER_ARGS pArgs = malloc(sizeof(SAVER_ARGS));
+	PSAVER_ARGS pArgs = *pSaverArgs;
+	if (pArgs == NULL)
+	{
+		SetLastError(ERROR_OUTOFMEMORY);
+		return ERROR_OUTOFMEMORY;
+	}
+
 	pArgs->nOption = SAVER_SETTINGS_DLG;
 	pArgs->hwndAttach = NULL;
 
@@ -26,5 +32,5 @@ PSAVER_ARGS WINAPI ParseArguments(LPCSTR lpszCmdLine) {
 		}
 	}
 
-	return pArgs;
+	return ERROR_SUCCESS;
 }

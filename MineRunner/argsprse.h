@@ -10,6 +10,6 @@
 typedef struct tagSAVER_ARGS {
 	UINT	nOption;
 	HWND	hwndAttach;
-} SAVER_ARGS, *PSAVER_ARGS;
+} SAVER_ARGS, * PSAVER_ARGS;
 
-PSAVER_ARGS WINAPI ParseArguments(LPCSTR);
+DWORD WINAPI ParseArguments(LPCSTR, PSAVER_ARGS*);
