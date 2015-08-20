@@ -8,7 +8,7 @@ INT_PTR CALLBACK SettingsDlgProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPARAM 
 
 	case WM_COMMAND:
 		if (wParam == IDOK) {
-			EndDialog(hWndDlg, 0);
+			EndDialog(hWndDlg, wParam);
 			return TRUE;
 		}
 		break;
@@ -17,9 +17,22 @@ INT_PTR CALLBACK SettingsDlgProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPARAM 
 	}
 }
 
-INT WINAPI ShowSettingsDialog(HINSTANCE hInstance, HWND hWndParent) {
-	DialogBox(hInstance,
-			  MAKEINTRESOURCE(IDD_DLG_SETTINGS),
-			  hWndParent,
-			  (DLGPROC)SettingsDlgProc);
+INT WINAPI ShowSettingsDialog(HINSTANCE hInstance) {
+	if (!IsWindow(g_hwndSettings)) {
+		g_hwndSettings = CreateDialog(hInstance,
+			MAKEINTRESOURCE(IDD_DLG_SETTINGS),
+			NULL,
+			(DLGPROC)SettingsDlgProc);
+	}
+
+	return ShowWindow(g_hwndSettings, SW_SHOW);
+}
+
+INT WINAPI ShowSettingDialogModal(HINSTANCE hInstance) {
+	HWND hwndFore = GetForegroundWindow();
+	return DialogBox(hInstance,
+		MAKEINTRESOURCE(IDD_DLG_SETTINGS),
+		hwndFore,
+		(DLGPROC)SettingsDlgProc);
+
 }

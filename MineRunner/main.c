@@ -17,6 +17,8 @@ INT WINAPI WinMain(HINSTANCE	hInstance,
 	
 	PSAVER_ARGS pArgs = malloc(sizeof(SAVER_ARGS));
 	SAVER_ARGS args;
+	BOOL bRet = FALSE;
+	MSG msg;
 
 	//	Verify only 1 instance is running.
 	InitSingleton(CLSID);
@@ -40,10 +42,10 @@ INT WINAPI WinMain(HINSTANCE	hInstance,
 	switch (args.nOption)
 	{
 	case SAVER_SETTINGS_DLG:
-		//ShowSettingsDialog(hInstance, NULL);
+		ShowSettingsDialog(hInstance, NULL);
 		break;
 	case SAVER_SETTINGS_DLG_MODAL:
-		//ShowSettingsDialog(hInstance, (HWND)args.hwndAttach);
+		ShowSettingsDialog(hInstance, (HWND)args.hwndAttach);
 		break;
 	case SAVER_CHILD_SHOW:
 		break;
@@ -58,5 +60,17 @@ INT WINAPI WinMain(HINSTANCE	hInstance,
 
 	free(lpszCmdLine);
 	free(pArgs);
+
+	//	Main message loop
+	while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0)
+	{
+		if (bRet == -1) {
+		}
+		else {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+
 	return EXIT_SUCCESS;
 }

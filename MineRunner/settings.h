@@ -2,4 +2,8 @@
 
 #include "StdAfx.h"
 
-INT WINAPI ShowSettingsDialog(HINSTANCE, HWND);
+HWND g_hwndSettings = NULL;
+
+INT WINAPI ShowSettingsDialog(HINSTANCE);
+
+INT WINAPI ShowSettingsDialogModal(HINSTANCE);
